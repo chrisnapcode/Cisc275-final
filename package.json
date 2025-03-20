@@ -2,6 +2,7 @@
   "name": "starter_helpi",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://chrisnapcode.github.io/Cisc275-final",
   "dependencies": {
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
@@ -11,7 +12,6 @@
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
     "bootstrap": "^5.3.2",
-    "gh-pages": "^6.1.1",
     "openai": "^4.26.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
@@ -45,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
