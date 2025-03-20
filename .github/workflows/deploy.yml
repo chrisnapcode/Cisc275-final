@@ -68,12 +68,6 @@ jobs:
                   npm install |& tee -a ./dist/installation.html
                   echo "</pre></body></html>" >> ./dist/installation.html
                   echo "* [Installation](../installation.html)" >> docs/quick-links.md
-            # Run linter
-            - name: Run Linter
-              id: lint
-              run: |
-                  npm run eslint-output
-                  echo "* [Linter](../lint.html)" >> docs/quick-links.md
             # Build the project
             - name: Build the project
               id: build
