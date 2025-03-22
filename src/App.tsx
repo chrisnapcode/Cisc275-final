@@ -33,6 +33,7 @@ function App() {
           Chris Napolin
           Eric Jackson
           Joe Murphy
+
         </p>
         <a
           className="App-link"
