@@ -15,7 +15,7 @@
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 0.2;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,6 +26,33 @@
 
 .App-link {
   color: #61dafb;
+}
+
+.api-box {
+  margin-top: 375px
+}
+
+.home-title {
+  font-size: 50px;
+  font-weight: 500;
+}
+
+.basic_assess {
+  height: 400px;
+}
+
+.detailed_assess {
+  height: 400px
+}
+
+.assess_buttons { 
+  display: flex;
+  justify-content: center;  /* Centers the images horizontally */
+  align-items: center;  /* Centers them vertically */
+  gap: 100px; /* Adds spacing between images */
+  width: 100%; /* Ensures full width */
+  height: 100px; /* Adjust height as needed */
+  margin-top: 225px;
 }
 
 @keyframes App-logo-spin {

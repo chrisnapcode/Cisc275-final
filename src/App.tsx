@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import { Button, Form } from 'react-bootstrap';
+
+import basic from './basic-assessment.jpg'
+import detailed from './detailed-assessment.jpg'
 
 //local storage and API Key: key should be entered in by the user and will be stored in local storage (NOT session storage)
 let keyData: string = "";
@@ -27,29 +29,45 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Mustafa Sharkawy
-          Chris Napolin
-          Eric Jackson
-          Joe Murphy
-          change
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <button className="btn btn-primary btn-sm">
+          Home Page
+        </button>
       </header>
-      <Form>
-        <Form.Label>API Key:</Form.Label>
-        <Form.Control type="password" placeholder="Insert API Key Here" onChange={changeKey}></Form.Control>
-        <br></br>
-        <Button className="Submit-Button" onClick={handleSubmit}>Submit</Button>
-      </Form>
+      <div className="home-title">
+        Career Finder
+      </div>
+      <div>
+        Click either of the below images for different complexities of career assessment
+      </div>
+
+      <div className='assess_buttons'>
+        <div>
+          <Button>
+            <img className='basic_assess' src={basic}/>
+          </Button>
+          <div>
+            A basic career assessment surveys some surface level information to create a preliminary decision on the ideal career path for you.
+          </div>
+        </div>
+    
+        <div>
+          <Button>
+            <img className='detailed_assess' src={detailed}/>
+          </Button>
+          <div>
+            A detailed career assessment that uses top of the line technology to find precisely your next career path.
+          </div>
+        </div>
+      </div>
+
+      <div className="api-box">
+        <Form>
+          <Form.Label>API Key:</Form.Label>
+          <Form.Control type="password" placeholder="Insert API Key Here" onChange={changeKey}></Form.Control>
+          <br></br>
+          <Button className="Submit-Button" onClick={handleSubmit}>Submit</Button>
+        </Form>
+      </div>
     </div>
   );
 }
