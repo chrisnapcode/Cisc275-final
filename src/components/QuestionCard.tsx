@@ -4,13 +4,15 @@ import { Card, ButtonGroup, ToggleButton } from "react-bootstrap";
 export type Question = {
   id: string;
   text: string;
+  answered: boolean;
 };
 
 type QuestionCardProps = {
   question: Question;
+  onAnswered: (id: string, answered: boolean) => void;
 };
 
-const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
+const QuestionCard: React.FC<QuestionCardProps> = ({ question , onAnswered}) => {
   const [selected, setSelected] = useState<number | null>(null);
 
   const options = [
@@ -20,6 +22,13 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
     { value: 4, label: "Agree" },
     { value: 5, label: "Strongly Agree" },
   ];
+
+  const handleClick = (e: React.ChangeEvent<HTMLInputElement>, answered: boolean) => {
+    setSelected(parseInt(e.currentTarget.value));
+    if (selected === null) {
+        onAnswered(question.id, answered);
+      }
+  }
 
   return (
     <Card className="my-3 shadow-sm">
@@ -35,7 +44,7 @@ const QuestionCard: React.FC<QuestionCardProps> = ({ question }) => {
                 name={`question-${question.id}`}     // unique group per question
                 value={opt.value}
                 checked={selected === opt.value}
-                onChange={(e) => {setSelected(parseInt(e.currentTarget.value))}}
+                onChange={(e) => {handleClick(e, selected === null)}}
             >
               {opt.label}
             </ToggleButton>
