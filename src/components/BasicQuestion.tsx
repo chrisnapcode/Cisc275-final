@@ -1,7 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import QuestionCard from './QuestionCard';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { Button } from 'react-bootstrap';
 import ProgressBar from './ProgressBar';
 import { Question }  from './QuestionCard';
 
@@ -17,53 +18,61 @@ const questions: Question[] = [
 
 function BasicQuestion() {
   const [progress, setProgress] = useState<number>(0);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+
+  const showNotification = () => {
+    setShowPopup(true);
+  }
   
   const incrementProgress = (questionId: string, answered: boolean) => {
     if (answered) {
-      setProgress((prev: number) => Math.min(Math.max(prev + ((1/ questions.length) * 100), 0), 100));
+      const newProgress = Math.min(Math.max(progress + ((1/ questions.length) * 100), 0), 100);
+      setProgress(() => newProgress);
+      console.log(newProgress)
+      if (newProgress > 99) {
+        showNotification()
+      }
     } else {
       setProgress((prev: number) => Math.min(Math.max(prev - ((1/ questions.length) * 100), 0), 100));
     }
   };
 
-  const [showPopup, setShowPopup] = useState<boolean>(false);
-  
-  useEffect(() => {
-    setShowPopup(true); 
-  }, []);
-
   const handleClosePopup = () => {
       setShowPopup(false);
-    };
-    const overlayStyle: React.CSSProperties = {
-      position: "fixed",
-      top: 0,
-      left: 0,
-      width: "100vw",
-      height: "100vh",
-      backgroundColor: "rgba(0, 0, 0, 0.6)",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      zIndex: 1000
-    };
-    
-    const popupStyle: React.CSSProperties = {
-      backgroundColor: "#fff",
-      padding: "2rem",
-      borderRadius: "10px",
-      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-      textAlign: "center"
-    };
+  };
+  const overlayStyle: React.CSSProperties = {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100vw",
+    height: "100vh",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000
+  };
+  
+  const popupStyle: React.CSSProperties = {
+    backgroundColor: "#fff",
+    padding: "2rem",
+    borderRadius: "10px",
+    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+    textAlign: "center"
+  };
+
 
   return (
     <div>
       {showPopup && (
         <div style={overlayStyle}>
           <div style={popupStyle}>
-            <h2>Welcome to the Advanced Questions!</h2>
-            <p>Lets get started 🚀</p>
-            <button onClick={handleClosePopup}>Continue</button>
+            <h2>You have completed the quiz! 🚀</h2>
+            <p>Would you like to submit?</p>
+            <Link to="/">
+              <Button variant="primary">Submit</Button>
+            </Link>
+            <button onClick={handleClosePopup}>Change Answers</button>
         </div>
       </div>
       )}
@@ -74,7 +83,9 @@ function BasicQuestion() {
           <QuestionCard key={q.id} question={q} onAnswered={incrementProgress} />
         ))}
       </div>
-      <Link to="/">Back to Home</Link>
+      <Link to="/">
+        <Button variant="primary">Submit</Button>
+      </Link>
     </div>
   );
 }
