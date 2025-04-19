@@ -56,15 +56,12 @@ function HomePage() {
     }
   };
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <button className="btn btn-primary btn-sm">Home Page</button>
-      </header>
-
-      <div className="home-title">Career Finder</div>
-      <div>Select your assessment:</div>
-
+    return (
+      <div className="App">
+  
+        <div className="home-title">Career Finder</div>
+        <div>Select your assessment:</div>
+    
       <div className="assess_buttons">
         <div>
           <Link to="/basic-question">
