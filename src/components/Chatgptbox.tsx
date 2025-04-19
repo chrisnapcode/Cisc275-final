@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const ChatGPTBox = () => {
-  const [apiKey, setApiKey] = useState('');
-  const [response, setResponse] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [apiKey, setApiKey] = useState<string>('');
+  const [response, setResponse] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   const callChatGPT = async () => {
     if (!apiKey) {
