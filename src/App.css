@@ -63,3 +63,20 @@
     transform: rotate(360deg);
   }
 }
+.nav-bar {
+  display: flex;
+  justify-content: flex-end; /* Push to right */
+  gap: 2rem;                 /* Spread out evenly */
+  padding: 1rem;
+  background-color: #f0f0f0; /* Optional: nav background */
+}
+
+.nav-bar a {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.nav-bar a:hover {
+  color: #007bff; /* Optional hover effect */
+}
