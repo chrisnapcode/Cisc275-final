@@ -13,8 +13,7 @@ function HomePage() {
   const [key, setKey] = useState<string>(localStorage.getItem("MYKEY") ?? "");
   const [chatResponse, setChatResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  /*const handleSubmit = () => {
+  /*const handleSubmit = () => {`
     localStorage.setItem("MYKEY", JSON.stringify(key));
     window.location.reload();
   };
@@ -58,9 +57,6 @@ function HomePage() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        <button className="btn btn-primary btn-sm">Home Page</button>
-      </header>
 
       <div className="home-title">Career Finder</div>
       <div>Select your assessment:</div>
