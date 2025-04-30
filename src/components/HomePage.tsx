@@ -20,6 +20,7 @@ function HomePage() {
   };
   */
   const changeKey = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
     setKey(event.target.value);
   };
 

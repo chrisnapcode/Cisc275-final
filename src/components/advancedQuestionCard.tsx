@@ -4,7 +4,7 @@ import { Question } from "./QuestionCard";
 
 type QuestionCardProps = {
   question: Question;
-  onAnswered: (id: string, answered: boolean) => void;
+  onAnswered: (id: string, answered: boolean, newVal: string) => void;
 };
 
 const AdvancedQuestionCard: React.FC<QuestionCardProps> = ({ question , onAnswered}) => {
@@ -14,7 +14,7 @@ const AdvancedQuestionCard: React.FC<QuestionCardProps> = ({ question , onAnswer
     setValue(newVal);
     // answered = true if there’s any non-whitespace text
     const isAnswered = newVal.trim().length > 0;
-    onAnswered(question.id, isAnswered);
+    onAnswered(question.id, isAnswered, newVal);
   };
 
 

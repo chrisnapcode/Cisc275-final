@@ -21,17 +21,26 @@ function AdvancedQuestions() {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   
   const answeredSet = useRef<Set<string>>(new Set());
-
-
+  const [answers, setAnswers] = useState<{ [id: string]: string }>({});
   
-  const incrementProgress = (questionId: string, answered: boolean) => {
+  const incrementProgress = (questionId: string, answered: boolean, newVal: string) => {
     // update the answered‐IDs set
-    if (answered) answeredSet.current.add(questionId);
-    else           answeredSet.current.delete(questionId);
+    if (answered) {
+      answeredSet.current.add(questionId);
+    }
+    else   {
+      answeredSet.current.delete(questionId);
+    }
     
     const newProgress = (answeredSet.current.size / questions.length) * 100;
     setProgress(newProgress);
-    };
+
+    setAnswers(prev => ({ ...prev, [questionId]: newVal }));
+  };
+
+  const handleFinalSubmit = () => {
+    console.log("Submitting answers:", answers);
+  };
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -84,7 +93,7 @@ function AdvancedQuestions() {
         ))}
       </div>
       <Link to="/">
-        <Button variant="primary">Submit</Button>
+        <Button variant="primary" onClick={handleFinalSubmit}>Submit</Button>
       </Link>
     </div>
     
