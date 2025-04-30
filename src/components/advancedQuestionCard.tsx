@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Form, InputGroup } from "react-bootstrap";
 import { Question } from "./QuestionCard"; 
 
 type QuestionCardProps = {
@@ -22,7 +22,18 @@ const AdvancedQuestionCard: React.FC<QuestionCardProps> = ({ question , onAnswer
     <Card className="my-3 shadow-sm">
       <Card.Body>
         <Card.Title>{question.text}</Card.Title>
-        <input type = "text" value = {value} onChange={handleChange} placeholder="Enter your answer" />
+        <Form.Group className="mb-3">
+          <Form.Label className="fw-semibold"></Form.Label>
+          <InputGroup>
+            <Form.Control
+              type="text"
+              value={value}
+              onChange={handleChange}
+              placeholder={"Type your answer"}
+              className="shadow-sm rounded"
+            />
+          </InputGroup>
+        </Form.Group>
       </Card.Body>
     </Card>
   );
