@@ -6,6 +6,8 @@ import ProgressBar from './ProgressBar';
 import AdvancedQuestionCard from './advancedQuestionCard';
 import { Question } from './QuestionCard';
 
+//These are the introspective, crazy, wonderful, beautiful questions that are like personality interviews.
+
 const questions: Question[] = [
   { id: "q1", text: "Which type of task energizes you most: problem solving, creative design, hands on work or collaborating with people?", answered: false },
   { id: "q2", text: "Describe a project or achievement you are proud of and the main skills you used to complete it.", answered: false },
@@ -17,8 +19,8 @@ const questions: Question[] = [
 ];
 
 function AdvancedQuestions() {
-  const [progress, setProgress] = useState<number>(0);
-  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0); // tracks the user's info
+  const [showPopup, setShowPopup] = useState<boolean>(false); // controls the popup
   
   const answeredSet = useRef<Set<string>>(new Set());
   const [answers, setAnswers] = useState<{ [id: string]: string }>({});
@@ -32,19 +34,22 @@ function AdvancedQuestions() {
       answeredSet.current.delete(questionId);
     }
     
-    const newProgress = (answeredSet.current.size / questions.length) * 100;
+    const newProgress = (answeredSet.current.size / questions.length) * 100; //set the progress bar to question length
     setProgress(newProgress);
 
     setAnswers(prev => ({ ...prev, [questionId]: newVal }));
   };
 
-  const handleFinalSubmit = () => {
+
+  const handleFinalSubmit = () => { 
     console.log("Submitting answers:", answers);
   };
 
   const handleClosePopup = () => {
     setShowPopup(false);
   };
+
+  //styling and positioning
   const overlayStyle: React.CSSProperties = {
     position: "fixed",
     top: 0,

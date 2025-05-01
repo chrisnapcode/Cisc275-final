@@ -3,12 +3,14 @@ import { Card, Form, InputGroup } from "react-bootstrap";
 import { Question } from "./QuestionCard"; 
 
 type QuestionCardProps = {
-  question: Question;
+  question: Question; //The question being asked
   onAnswered: (id: string, answered: boolean, newVal: string) => void;
 };
 
 const AdvancedQuestionCard: React.FC<QuestionCardProps> = ({ question , onAnswered}) => {
+  //State to hold the user's input
   const [value, setValue] = useState("");
+  //handles user input in real time 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVal = e.target.value;
     setValue(newVal);
@@ -27,10 +29,10 @@ const AdvancedQuestionCard: React.FC<QuestionCardProps> = ({ question , onAnswer
           <InputGroup>
             <Form.Control
               type="text"
-              value={value}
-              onChange={handleChange}
-              placeholder={"Type your answer"}
-              className="shadow-sm rounded"
+              value={value} // we in charge here
+              onChange={handleChange} //syncs input with state
+              placeholder={"Type your answer"} //tell the user to type
+              className="shadow-sm rounded" 
             />
           </InputGroup>
         </Form.Group>
