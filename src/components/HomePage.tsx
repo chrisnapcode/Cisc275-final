@@ -5,48 +5,43 @@ import axios from 'axios';
 import '../App.css';
 import basic from '../basic-assessment.jpg';
 import detailed from '../detailed-assessment.jpg';
-import ChatGPTBox from './Chatgptbox';
 
 
+//pull in  OpenAI Context hook
+import { useOpenAI } from '../contexts/OpenAIContext';
 
 function HomePage() {
-  const [key, setKey] = useState<string>(localStorage.getItem("MYKEY") ?? "");
+  // ← REPLACES your local key/useState
+  const { apiKey: key, setApiKey: changeKey } = useOpenAI();
+
+  // kept as-is
   const [chatResponse, setChatResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  /*const handleSubmit = () => {
-    localStorage.setItem("MYKEY", JSON.stringify(key));
-    window.location.reload();
-  };
-  */
-  const changeKey = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setKey(event.target.value);
-  };
 
   const handleChatGPTCall = async () => {
     if (!key) {
       alert('Please enter your API key.');
       return;
     }
-  
+
     setLoading(true);
     setChatResponse('');
-  
+
     try {
       const res = await axios.post(
         'https://api.openai.com/v1/chat/completions',
         {
           model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: 'Say hello in a fun way!' }],
+          messages: [{ role: 'user', content: 'Say hello' }],
         },
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${key}`,
+            Authorization: `Bearer ${key}`, 
           },
         }
       );
-  
+
       setChatResponse(res.data.choices[0].message.content);
     } catch (error) {
       console.error('Error calling OpenAI:', error);
@@ -56,12 +51,11 @@ function HomePage() {
     }
   };
 
-    return (
-      <div className="App">
-  
-        <div className="home-title">Career Finder</div>
-        <div>Select your assessment:</div>
-    
+  return (
+    <div className="App">
+      <div className="home-title">Career Finder</div>
+      <div>Select your assessment:</div>
+
       <div className="assess_buttons">
         <div>
           <Link to="/basic-question">
@@ -73,38 +67,44 @@ function HomePage() {
         </div>
 
         <div>
-        <Link to="/advanced-question">
-          <Button>
-            <img className="detailed_assess" src={detailed} alt="Detailed Assessment" />
-          </Button>
+          <Link to="/advanced-question">
+            <Button>
+              <img className="detailed_assess" src={detailed} alt="Detailed Assessment" />
+            </Button>
           </Link>
-
           <div>A detailed career assessment...</div>
         </div>
-        
       </div>
-        
+
       <div className="api-box">
-      <ChatGPTBox />
+
         <Form>
           <Form.Label>API Key:</Form.Label>
           <Form.Control
             type="password"
             placeholder="Insert API Key Here"
-            onChange={changeKey}
-            value={key}
+            value={key}                           
+            onChange={e => { changeKey(e.target.value); }} //  now updates Context
           />
           <br />
-          <Button className="Submit-Button" onClick={handleChatGPTCall}>
-          {loading ? 'Talking to GPT...' : 'Chat with GPT'}
+          <Button className="Submit-Button" onClick={handleChatGPTCall} disabled={loading}>
+            {loading ? 'Talking to GPT...' : 'Chat with GPT'}
           </Button>
-          {chatResponse && (
-          <div style={{ marginTop: '1rem', backgroundColor: '#f4f4f4', padding: '10px', borderRadius: '5px' }}>
-            <strong>ChatGPT Says:</strong>
-              <p>{chatResponse}</p>
-            </div>
-          )}
         </Form>
+
+        {chatResponse && (
+          <div
+            style={{
+              marginTop: '1rem',
+              backgroundColor: '#f4f4f4',
+              padding: '10px',
+              borderRadius: '5px',
+            }}
+          >
+            <strong>ChatGPT Says:</strong>
+            <p>{chatResponse}</p>
+          </div>
+        )}
       </div>
     </div>
   );
