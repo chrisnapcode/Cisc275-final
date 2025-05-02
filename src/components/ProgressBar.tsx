@@ -2,7 +2,7 @@ import React from 'react';
 
 
 
-const ProgressBar = ({ progress }: { progress: number }) => {
+const ProgressBar = ({ progress }: { progress: number }) => { //the progress bar component to add to each page with styling
   return (
     <div style={{
       width: '100%',

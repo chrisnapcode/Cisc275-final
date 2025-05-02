@@ -31,7 +31,7 @@ export default function FeedbackPage() {
     '4': 'agree',
     '5': 'strongly agree',
   };
-
+ 
   const handleFollowUp = async () => {
     if (!apiKey) {
       alert('Missing API key—please enter it on the home screen.');

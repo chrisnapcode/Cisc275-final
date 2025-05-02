@@ -8,7 +8,7 @@ const ChatGPTBox = () => {
 
   const callChatGPT = async () => {
     if (!apiKey) {
-      alert('Enter your API key first!');
+      alert('Enter your API key first!'); //gives an alert if there is no api key
       return;
     }
 
