@@ -9,7 +9,7 @@ import ProgressBar from './ProgressBar';
 interface ChatCompletionResponse {
   choices: { message: { content: string } }[];
 }
-
+//list of beautiful questions 
 const questions: Question[] = [
   { id: "q1", text: "I enjoy working independently without close supervision.", answered: false },
   { id: "q2", text: "I prefer structured tasks over open-ended challenges.", answered: false },
@@ -21,7 +21,7 @@ const questions: Question[] = [
 ];
 
 export default function BasicQuestion() {
-  const [progress, setProgress] = useState<number>(0);
+  const [progress, setProgress] = useState<number>(0);//set the progress bar's state
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [responses, setResponses] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -29,7 +29,7 @@ export default function BasicQuestion() {
   const { apiKey } = useOpenAI();
   const navigate = useNavigate();
 
-  const incrementProgress = (questionId: string, answered: boolean) => {
+  const incrementProgress = (questionId: string, answered: boolean) => { //set the progress bar to question length
     setProgress(prev =>
       Math.min(
         Math.max(prev + (answered ? 1 : -1) * (100 / questions.length), 0),

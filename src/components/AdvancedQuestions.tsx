@@ -90,7 +90,7 @@ function AdvancedQuestions() {
         </div>
       </div>
       )}
-      <h1>This is the Advanced Question Page</h1>
+      <h1>Advanced Self-Assessment</h1>
       <ProgressBar progress={progress} />
       <div className="container mt-4">
         {questions.map((q: Question) => (
