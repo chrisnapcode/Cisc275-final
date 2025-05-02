@@ -5,7 +5,7 @@ import HomePage from './components/HomePage';
 import BasicQuestion from './components/BasicQuestion';
 import AdvancedQuestion from './components/AdvancedQuestions';
 import FeedbackPage from './components/FeedbackPage';
-
+import AdvancedFeedbackPage from './components/AdvancedFeedBackPage';
 function App() {
   return (
         <>
@@ -21,6 +21,8 @@ function App() {
               <Route path="/basic-question" element={<BasicQuestion />} />
               <Route path="/advanced-question" element={<AdvancedQuestion />} />
               <Route path="/feedback" element={<FeedbackPage />} />
+              <Route path="/advanced-feedback" element={<AdvancedFeedbackPage />} />
+
             </Routes>
           </div>
         </>
