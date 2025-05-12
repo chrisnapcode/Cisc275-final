@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-const ProgressBar = ({ progress }: { progress: number }) => {
+const ProgressBar: React.FC<{ progress: number }> = ({ progress }) => {
   const [isSticky, setIsSticky] = useState(false);
   const progressBarRef = useRef<HTMLDivElement | null>(null);
   const scrollHandlerRef = useRef<() => void>();
@@ -9,7 +9,6 @@ const ProgressBar = ({ progress }: { progress: number }) => {
     const handleScroll = () => {
       if (progressBarRef.current) {
         const rect = progressBarRef.current.getBoundingClientRect();
-        // Only update the state if the progress bar position has changed
         if (rect.top <= 0 && !isSticky) {
           setIsSticky(true);
         } else if (rect.top > 0 && isSticky) {
@@ -18,7 +17,6 @@ const ProgressBar = ({ progress }: { progress: number }) => {
       }
     };
 
-    // Throttle scroll events with requestAnimationFrame
     scrollHandlerRef.current = () => {
       requestAnimationFrame(handleScroll);
     };
@@ -30,7 +28,7 @@ const ProgressBar = ({ progress }: { progress: number }) => {
         window.removeEventListener('scroll', scrollHandlerRef.current);
       }
     };
-  }, [isSticky]); // Dependency array ensures it updates only when necessary
+  }, [isSticky]);
 
   return (
     <div
@@ -39,9 +37,7 @@ const ProgressBar = ({ progress }: { progress: number }) => {
     >
       <div
         className="progress-bar"
-        style={{
-          width: `${progress}%`,  // Dynamically adjust width based on progress
-        }}
+        style={{ width: `${progress}%` }}
       />
     </div>
   );

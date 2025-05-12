@@ -180,7 +180,7 @@ export default function AdvancedFeedbackPage() {
     <div className="container mt-4">
       <div ref={contentRef}>
         <h2>Your Customized Advanced Feedback</h2>
-
+  
         {loadedQuestions.length > 0 ? (
           <>
             <h3>Your Answers:</h3>
@@ -193,13 +193,12 @@ export default function AdvancedFeedbackPage() {
             </ul>
           </>
         ) : (
-          <p>No answers to display.</p>
+          <p>No answers to display. Try clicking on the blank user profile picture if you are signed in and you are sure have answered the quiz.</p>
         )}
-
+  
         <h3>AI Feedback:</h3>
         <pre style={{ whiteSpace: 'pre-wrap' }}>{loadedChatResponse}</pre>
-
-
+  
         {followUpResponse && (
           <div className="mt-3 p-3 border rounded bg-light">
             <h4>Follow-up Advice</h4>
@@ -207,32 +206,34 @@ export default function AdvancedFeedbackPage() {
           </div>
         )}
       </div>
+  
       <div className="mt-4">
-          <h3>Ask for more advice:</h3>
-          <textarea
-            className="form-control"
-            rows={3}
-            placeholder="Type a follow-up question here..."
-            value={followUp}
-            onChange={e => { setFollowUp(e.target.value); }}
-            disabled={loading}
-          />
-          <button
-            className="btn btn-primary mt-2"
-            onClick={handleFollowUp}
-            disabled={loading || !followUp.trim()}
-          >
-            {loading ? 'Asking…' : 'Ask'}
-          </button>
-        </div>
+        <h3>Ask for more advice:</h3>
+        <textarea
+          className="form-control"
+          rows={3}
+          placeholder="Type a follow-up question here..."
+          value={followUp}
+          onChange={e => { setFollowUp(e.target.value); }}
+          disabled={loading}
+        />
+        <button
+          className="btn btn-primary mt-2"
+          onClick={handleFollowUp}
+          disabled={loading || !followUp.trim()}
+        >
+          {loading ? 'Asking…' : 'Ask'}
+        </button>
+      </div>
+  
       <div className="mt-4">
-          <button className="btn btn-success me-2" onClick={handleDownloadPDF}>
-            Save as PDF
-          </button>
-          <Link to="/" className="btn btn-link mt-2">
-            ← Back to Home
-          </Link>
-        </div>
+        <button className="btn btn-success me-2" onClick={handleDownloadPDF}>
+          Save as PDF
+        </button>
+        <Link to="/" className="btn btn-link mt-2">
+          ← Back to Home
+        </Link>
+      </div>
     </div>
   );
-}
+}  
