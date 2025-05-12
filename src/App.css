@@ -265,7 +265,7 @@
 }
 
 .btn {
-  background-color: #6bc16e;
+  background-color: #6bb8c1;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -276,7 +276,7 @@
 }
 
 .btn:hover {
-  background-color: #45a049;
+  background-color: #6bb8c1;
   transform: scale(1.05);
 }
 
@@ -370,3 +370,140 @@ button, input[type="text"], textarea {
   font-size: 16px;
 }
 
+/* Apply gradient background to the entire app */
+body {
+  background: linear-gradient(135deg, #6e7a8d, #a3b5c5); /* Gradient background */
+  margin: 0;
+  font-family: Arial, sans-serif; /* Adjust this to your preferred font */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures content stays in place */
+}
+
+/* Homepage container */
+.homepage-container {
+  position: relative;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1; /* Ensures content stays above the background */
+}
+
+/* Button container */
+.assess_buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  width: 100%;
+  height: auto;
+  margin-top: 100px;
+}
+
+/* Button styling */
+.assess_buttons button {
+  border-radius: 10px;
+  padding: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.assess_buttons button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Image styling */
+.basic_assess, .detailed_assess {
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Improve visibility of assessment text */
+.assess_buttons div {
+  text-align: center;
+  color: #333;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Form and buttons container */
+.api-box {
+  margin-top: 50px;
+}
+
+.api-box .Submit-Button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.api-box .Submit-Button:hover {
+  background-color: #0056b3;
+}
+
+/* Header styling */
+.home-title {
+  color: white;
+  font-size: 36px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Container for content */
+.container {
+  background-color: rgba(255, 255, 255, 0.85); /* Lightened background */
+  padding: 30px;
+  border-radius: 10px;
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  margin-top: 40px;
+}
+
+/* General page layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+/* Progress bar container - initially placed above the questions */
+.progress-bar-container {
+  position: absolute;  /* Initially placed above questions */
+  top: 50px;  /* Adjust this to position it where you want */
+  left: 0;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  height: 20px;
+  z-index: 1000;
+  margin: 0;
+  transition: top 0.3s ease-in-out;  /* Smooth transition for the top property */
+}
+
+/* Fixed position when it becomes sticky */
+.progress-bar-container.sticky {
+  position: fixed;  /* Fixed when it reaches the top of the screen */
+  top: 0;  /* Stick to the top of the viewport */
+}
+
+/* Inner progress bar */
+.progress-bar {
+  height: 100%;
+  border-radius: 15px;
+  background-color: #4CAF50;
+  width: 0;  /* Set dynamically with progress */
+  transition: width 0.3s ease-in-out;
+}

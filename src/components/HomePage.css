@@ -1,0 +1,89 @@
+/* Gradient background */
+.homepage-container {
+    position: relative;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #6e7a8d, #a3b5c5); /* Add gradient colors */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Button container */
+  .assess_buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px; /* Adjusted for more space */
+    width: 100%;
+    height: auto;
+    margin-top: 100px;
+  }
+  
+  /* Button styling */
+  .assess_buttons button {
+    border-radius: 10px;
+    padding: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .assess_buttons button:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Added box shadow for hover effect */
+  }
+  
+  /* Image styling */
+  .basic_assess, .detailed_assess {
+    height: 300px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  /* Improve visibility of assessment text */
+  .assess_buttons div {
+    text-align: center;
+    color: #333;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  /* Add some padding to the form and buttons */
+  .api-box {
+    margin-top: 50px;
+  }
+  
+  .api-box .Submit-Button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .api-box .Submit-Button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Form and text styling */
+  .home-title {
+    color: white;
+    font-size: 36px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .container {
+    background-color: rgba(255, 255, 255, 0.85); /* Lightened background for better contrast */
+    padding: 30px;
+    border-radius: 10px;
+    position: relative;
+    z-index: 1;
+    width: 80%;
+    margin-top: 40px;
+  }
+  
