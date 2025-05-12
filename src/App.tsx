@@ -74,7 +74,7 @@ function App() {
           <Route path="/feedback" element={<FeedbackPage />} />
           <Route path="/advanced-feedback" element={<AdvancedFeedbackPage/>} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="user-info" element={<UserProfileForm/>} />
+          <Route path="/user-info" element={<UserProfileForm/>} />
 
         </Routes>
       </div>

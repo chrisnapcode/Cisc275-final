@@ -13,7 +13,7 @@ type State = {
   cameFromAdvanced?: boolean;
 };
 
-export default function AdvancedFeedbackPage() {
+export default function AdvancedFeedbackPage(): React.JSX.Element {
   const { apiKey } = useOpenAI();
   const location = useLocation();
   const {
@@ -98,6 +98,7 @@ export default function AdvancedFeedbackPage() {
         });
     }
   }, [cameFromAdvanced, chatResponse, questions, answers]);
+  
 
   const handleFollowUp = async () => {
     if (!apiKey) {
@@ -155,7 +156,7 @@ export default function AdvancedFeedbackPage() {
           </ul>
         </>
       ) : (
-        <p>No answers to display.</p>
+        <p>No answers to display. Try clicking on the blank user profile picture if you are signed in and you are sure have answered the quiz.</p>
       )}
 
       <h3>AI Feedback:</h3>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const ChatGPTBox = () => {
+const ChatGPTBox: React.FC = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [response, setResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);

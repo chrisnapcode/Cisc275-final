@@ -1,27 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useOpenAI } from '../contexts/OpenAIContext';
 import type { Question } from '../components/QuestionCard';
 
+import { ref, set, get } from "firebase/database";
+import { auth, db } from "../firebase";
 type State = {
   chatResponse?: string;
   responses?: Record<string, string>;
   questions?: Question[];
+  cameFromBasic?: boolean;
 };
 
-export default function FeedbackPage() {
+export default function FeedbackPage(): React.JSX.Element {
   const { apiKey } = useOpenAI();
   const location = useLocation();
   const {
     chatResponse = 'No feedback available.',
     responses = {},
     questions = [],
+    cameFromBasic = false,
   } = (location.state ?? {}) as State;
 
   const [followUp, setFollowUp] = useState<string>('');
   const [followUpResponse, setFollowUpResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadedQuestions, setQuestions] = useState<Question[]>(questions);
+  const [loadedAnswers, setAnswers] = useState<Record<string, string>>(responses);
+  const [loadedChatResponse, setChatResponse] = useState<string>(chatResponse);
+
 
   // map numeric choice to descriptor
   const scaleLabels: Record<string, string> = {
@@ -31,6 +39,73 @@ export default function FeedbackPage() {
     '4': 'agree',
     '5': 'strongly agree',
   };
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (!user) return;
+
+    if (cameFromBasic) {
+      // Save to Firebase
+      const questionsRef = ref(db, `basicFeedback/questions/${user.uid}`);
+      set(questionsRef, {
+        questions: questions.map(q => ({
+          id: q.id,
+          text: q.text,
+          responses: responses[q.id],
+        })),
+      }).catch(err => {
+        console.error("Failed to save questions:", err);
+      });
+
+      if (!chatResponse || chatResponse === "No feedback available.") return;
+
+      const feedbackRef = ref(db, `basicFeedback/feedback/${user.uid}`);
+      set(feedbackRef, {
+        feedback: chatResponse,
+      }).catch(err => {
+        console.error("Failed to save AI feedback:", err);
+      });
+    } else {
+      // Load from Firebase
+      const questionsRef = ref(db, `basicFeedback/questions/${user.uid}`);
+      get(questionsRef)
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            const data = snapshot.val() as {
+              questions: { id: string; text: string; responses: string }[];
+            };
+
+            const qList = data.questions.map(q => ({
+              id: q.id,
+              text: q.text,
+              answered: false, // Default value for 'answered'
+            }));
+
+            const aMap: Record<string, string> = {};
+            data.questions.forEach(q => {
+              aMap[q.id] = q.responses;
+            });
+            console.log("Loaded answers:", aMap);
+            setQuestions(qList);
+            setAnswers(aMap);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching questions:", error);
+        });
+
+      const feedbackRef = ref(db, `basicFeedback/feedback/${user.uid}`);
+      get(feedbackRef)
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            setChatResponse(snapshot.val().feedback);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching feedback:", error);
+        });
+    }
+  }, [cameFromBasic, chatResponse, questions, responses]);
  
   const handleFollowUp = async () => {
     if (!apiKey) {
@@ -78,12 +153,12 @@ export default function FeedbackPage() {
     <div className="container mt-4">
       <h2>Your Customized Feedback</h2>
 
-      {questions.length > 0 ? (
+      {loadedQuestions.length > 0 ? (
         <>
           <h3>Your Answers:</h3>
           <ul>
-            {questions.map(q => {
-              const raw = responses[q.id];
+            {loadedQuestions.map(q => {
+              const raw = loadedAnswers[q.id];
               const label = scaleLabels[raw];
               return (
                 <li key={q.id}>
@@ -94,11 +169,11 @@ export default function FeedbackPage() {
           </ul>
         </>
       ) : (
-        <p>No answers to display.</p>
+        <p>No answers to display. Try clicking on the blank user profile picture if you are signed in and you are sure have answered the quiz </p>
       )}
 
       <h3>AI Feedback:</h3>
-      <pre style={{ whiteSpace: 'pre-wrap' }}>{chatResponse}</pre>
+      <pre style={{ whiteSpace: 'pre-wrap' }}>{loadedChatResponse}</pre>
 
       {/* ChatGPT follow-up box */}
       <div className="mt-4">

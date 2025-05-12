@@ -10,7 +10,7 @@ import detailed from '../detailed-assessment.jpg';
 //pull in  OpenAI Context hook
 import { useOpenAI } from '../contexts/OpenAIContext';
 
-function HomePage() {
+function HomePage(): React.JSX.Element {
   // ← REPLACES your local key/useState
   const { apiKey: key, setApiKey: changeKey } = useOpenAI();
 

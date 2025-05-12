@@ -5,6 +5,9 @@ import axios from 'axios';
 import QuestionCard, { Question } from './QuestionCard';
 import { Button } from 'react-bootstrap';
 import ProgressBar from './ProgressBar';
+import { auth } from '../firebase';
+import { ref, get } from 'firebase/database';
+import { db } from '../firebase';
 
 interface ChatCompletionResponse {
   choices: { message: { content: string } }[];
@@ -20,7 +23,17 @@ const questions: Question[] = [
   { id: "q7", text: "I would enjoy leading a team or taking on a leadership role.", answered: false },
 ];
 
-export default function BasicQuestion() {
+interface UserProfile {
+  age: string;
+  hasCollegeDegree: boolean;
+  collegeDegree: string;
+  softSkills: string;
+  experience: string;
+  interests: string;
+}
+
+
+export default function BasicQuestion(): React.JSX.Element {
   const [progress, setProgress] = useState<number>(0);//set the progress bar's state
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [responses, setResponses] = useState<Record<string, string>>({});
@@ -59,10 +72,33 @@ export default function BasicQuestion() {
       'Organize your response under headings and use bullet points for specific steps or tips, making it easy to read and implement.' + 'focus on actual career paths, not just general advice.';
 
     // Build prompt
+    const user = auth.currentUser;
+    let profileDataText = '';
+    if (user) {
+      const userId = user.uid;
+      const userRef = ref(db, `moreUserInfo/${userId}`);
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val() as UserProfile;
+    
+        profileDataText = `
+    User Profile:
+    - Age: ${data.age}
+    - Has College Degree: ${data.hasCollegeDegree ? 'Yes' : 'No'}
+    - Degree: ${data.collegeDegree}
+    - Soft Skills: ${data.softSkills}
+    - Experience: ${data.experience}
+    - Interests: ${data.interests}
+        `.trim();
+      }
+    }
     const prompt = [
       instruction,
+      profileDataText,
+      '',
       ...questions.map(q => `Q: ${q.text}\nA: ${responses[q.id]}`)
     ].join('\n\n');
+    
 
     try {
       const res = await axios.post<ChatCompletionResponse>(
@@ -74,10 +110,10 @@ export default function BasicQuestion() {
         { headers: { Authorization: `Bearer ${apiKey}` } }
       );
       const chatResponse = res.data.choices[0].message.content;
-      navigate('/feedback', { state: { chatResponse, responses, questions } });
+      navigate('/feedback', { state: { chatResponse, responses, questions, cameFromBasic: true } });
     } catch (error) {
       console.error('Error calling OpenAI:', error);
-      navigate('/feedback', { state: { chatResponse: 'Error calling OpenAI.', responses, questions } });
+      navigate('/feedback', { state: { chatResponse: 'Error calling OpenAI.', responses, questions, cameFromBasic: true } });
     } finally {
       setSubmitting(false);
     }

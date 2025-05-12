@@ -39,6 +39,7 @@ const Auth: React.FC = () => {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
     } catch (err) {
+      alert("Invalid email or password.");
       console.error("Email sign-in failed:", err);
     }
   };
