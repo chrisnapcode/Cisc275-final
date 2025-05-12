@@ -479,10 +479,10 @@ body {
   min-height: 100vh;
 }
 
-/* Progress bar container - initially placed above the questions */
+/* Progress bar container - Initially placed below the "Basic Self-Assessment" text */
 .progress-bar-container {
-  position: absolute;  /* Initially placed above questions */
-  top: 50px;  /* Adjust this to position it where you want */
+  position: absolute;  /* Start as absolute */
+  top: 100px;  /* Adjust this value to position it right below the "Basic Self-Assessment" text */
   left: 0;
   width: 100%;
   background-color: #e0e0e0;
@@ -490,13 +490,13 @@ body {
   height: 20px;
   z-index: 1000;
   margin: 0;
-  transition: top 0.3s ease-in-out;  /* Smooth transition for the top property */
+  transition: top 0.3s ease-in-out;  /* Smooth transition for when it becomes sticky */
 }
 
-/* Fixed position when it becomes sticky */
+/* Fixed position when the progress bar reaches the top */
 .progress-bar-container.sticky {
-  position: fixed;  /* Fixed when it reaches the top of the screen */
-  top: 0;  /* Stick to the top of the viewport */
+  position: fixed;  /* Fixed once it reaches the top */
+  top: 0;  /* Stick it to the top of the viewport */
 }
 
 /* Inner progress bar */

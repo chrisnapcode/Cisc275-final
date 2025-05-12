@@ -3,25 +3,34 @@ import React, { useEffect, useState, useRef } from 'react';
 const ProgressBar = ({ progress }: { progress: number }) => {
   const [isSticky, setIsSticky] = useState(false);
   const progressBarRef = useRef<HTMLDivElement | null>(null);
+  const scrollHandlerRef = useRef<() => void>();
 
   useEffect(() => {
     const handleScroll = () => {
       if (progressBarRef.current) {
-        // Get the distance from the top of the page to the progress bar
         const rect = progressBarRef.current.getBoundingClientRect();
-        if (rect.top <= 0) {
-          setIsSticky(true);  // Make it sticky when it reaches the top
-        } else {
-          setIsSticky(false);  // Keep it absolute when it's not at the top
+        // Only update the state if the progress bar position has changed
+        if (rect.top <= 0 && !isSticky) {
+          setIsSticky(true);
+        } else if (rect.top > 0 && isSticky) {
+          setIsSticky(false);
         }
       }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
+    // Throttle scroll events with requestAnimationFrame
+    scrollHandlerRef.current = () => {
+      requestAnimationFrame(handleScroll);
     };
-  }, []);
+
+    window.addEventListener('scroll', scrollHandlerRef.current);
+
+    return () => {
+      if (scrollHandlerRef.current) {
+        window.removeEventListener('scroll', scrollHandlerRef.current);
+      }
+    };
+  }, [isSticky]); // Dependency array ensures it updates only when necessary
 
   return (
     <div
@@ -31,7 +40,7 @@ const ProgressBar = ({ progress }: { progress: number }) => {
       <div
         className="progress-bar"
         style={{
-          width: `${progress}%`, // Dynamically adjust width based on progress
+          width: `${progress}%`,  // Dynamically adjust width based on progress
         }}
       />
     </div>
