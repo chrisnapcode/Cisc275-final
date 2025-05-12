@@ -5,16 +5,14 @@ import axios from 'axios';
 import '../App.css';
 import basic from '../basic-assessment.jpg';
 import detailed from '../detailed-assessment.jpg';
+import './HomePage.css';
 
-
-//pull in  OpenAI Context hook
+// Pull in OpenAI Context hook
 import { useOpenAI } from '../contexts/OpenAIContext';
 
 function HomePage() {
-  // ← REPLACES your local key/useState
   const { apiKey: key, setApiKey: changeKey } = useOpenAI();
 
-  // kept as-is
   const [chatResponse, setChatResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -37,7 +35,7 @@ function HomePage() {
         {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${key}`, 
+            Authorization: `Bearer ${key}`,
           },
         }
       );
@@ -52,7 +50,7 @@ function HomePage() {
   };
 
   return (
-    <div className="App">
+    <div className="homepage-container"> {/* Wrap content with this class */}
       <div className="home-title">Career Finder</div>
       <div>Select your assessment:</div>
 
@@ -77,14 +75,13 @@ function HomePage() {
       </div>
 
       <div className="api-box">
-
         <Form>
           <Form.Label>API Key:</Form.Label>
           <Form.Control
             type="password"
             placeholder="Insert API Key Here"
-            value={key}                           
-            onChange={e => { changeKey(e.target.value); }} //  now updates Context
+            value={key}
+            onChange={(e) => { changeKey(e.target.value); }} // Now updates Context
           />
           <br />
           <Button className="Submit-Button" onClick={handleChatGPTCall} disabled={loading}>
