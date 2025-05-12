@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 //import { Link } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import ProgressBar from './ProgressBar';
@@ -7,7 +7,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import AdvancedQuestionCard from './advancedQuestionCard';
 import { Question } from './QuestionCard';
-
+import { auth } from '../firebase';
+import { ref, get } from 'firebase/database';
+import { db } from '../firebase';
 //These are the introspective, crazy, wonderful, beautiful questions that are like personality interviews.
 interface ChatCompletionResponse {
   choices: { message: { content: string } }[];
@@ -23,13 +25,21 @@ const questions: Question[] = [
   { id: "q7", text: "In your ideal job, what three activities would you spend most of your time doing?", answered: false },
 ];
 
+interface UserProfile {
+  age: string;
+  hasCollegeDegree: boolean;
+  collegeDegree: string;
+  softSkills: string;
+  experience: string;
+  interests: string;
+}
+
 function AdvancedQuestions() {
   const [progress, setProgress] = useState<number>(0); // tracks the user's info
-  const [showPopup, setShowPopup] = useState<boolean>(false); // controls the popup
   const answeredSet = useRef<Set<string>>(new Set());
   const [answers, setAnswers] = useState<{ [id: string]: string }>({});
   const [submitting, setSubmitting] = useState<boolean>(false);
-
+  
   const { apiKey } = useOpenAI();
   const navigate = useNavigate();
 
@@ -63,11 +73,33 @@ function AdvancedQuestions() {
       'Organize your response under headings and use bullet points for specific steps or tips, making it easy to read and implement.' + 'focus on actual career paths, not just general advice.';
 
     // Build prompt
+    const user = auth.currentUser;
+    let profileDataText = '';
+    if (user) {
+      const userId = user.uid;
+      const userRef = ref(db, `moreUserInfo/${userId}`);
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val() as UserProfile;
+    
+        profileDataText = `
+    User Profile:
+    - Age: ${data.age}
+    - Has College Degree: ${data.hasCollegeDegree ? 'Yes' : 'No'}
+    - Degree: ${data.collegeDegree}
+    - Soft Skills: ${data.softSkills}
+    - Experience: ${data.experience}
+    - Interests: ${data.interests}
+        `.trim();
+      }
+    }
     const prompt = [
       instruction,
+      profileDataText,
+      '',
       ...questions.map(q => `Q: ${q.text}\nA: ${answers[q.id]}`)
     ].join('\n\n');
-
+    
     try {
       const res = await axios.post<ChatCompletionResponse>(
         'https://api.openai.com/v1/chat/completions',
@@ -78,63 +110,26 @@ function AdvancedQuestions() {
         { headers: { Authorization: `Bearer ${apiKey}` } }
       );
       const chatResponse = res.data.choices[0].message.content;
-      console.log('Chat response:', answers);
-      navigate('/advanced-feedback', { state: { chatResponse, answers, questions } });
-    } catch (error) {
+      navigate('/advanced-feedback', {
+        state: {
+          chatResponse,
+          answers,
+          questions,
+          cameFromAdvanced: true
+        }
+      });
+          } catch (error) {
       console.error('Error calling OpenAI:', error);
       navigate('/advanced-feedback', { state: { chatResponse: 'Error calling OpenAI.', answers, questions } });
     } finally {
       setSubmitting(false);
     }
   };
-    
-
-
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
-
-  //styling and positioning
-  const overlayStyle: React.CSSProperties = {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000
-  };
   
-  const popupStyle: React.CSSProperties = {
-    backgroundColor: "#fff",
-    padding: "2rem",
-    borderRadius: "10px",
-    boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
-    textAlign: "center"
-  };
-  useEffect(() => {
-    if (progress === 100) {
-      setShowPopup(true);
-    }
-  }, [progress]);
-
+  //styling and positioning
+  
   return (
     <div>
-      {showPopup && (
-        <div style={overlayStyle}>
-          <div style={popupStyle}>
-            <h2>You have completed the quiz! 🚀</h2>
-            <p>Would you like to submit?</p>
-              <Button variant="primary"           onClick={submitAssessment}
-              >Submit</Button>
-            <button onClick={handleClosePopup}>Change Answers</button>
-        </div>
-      </div>
-      )}
       <h1>Advanced Self-Assessment</h1>
       <ProgressBar progress={progress} />
       <div className="container mt-4">
@@ -147,7 +142,7 @@ function AdvancedQuestions() {
           disabled={submitting || progress < 90}
         >
           {submitting ? 'Submitting…' : 'Submit Assessment'}
-Submit</Button>
+</Button>
     </div>
     
   );
