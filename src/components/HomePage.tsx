@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -7,9 +7,8 @@ import basic from '../basic-assessment.jpg';
 import detailed from '../detailed-assessment.jpg';
 import './HomePage.css';
 import { useOpenAI } from '../contexts/OpenAIContext';
-import { useEffect } from 'react';
 
-function HomePage() {
+function HomePage(): React.JSX.Element {
   const { apiKey: key, setApiKey: changeKey } = useOpenAI();
   const [chatResponse, setChatResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
@@ -18,7 +17,6 @@ function HomePage() {
 
   const validateKey = async (newKey: string): Promise<void> => {
     if (!newKey.trim()) {
-      console.log("falseA");
       setIsKeyValid(false);
       return;
     }
@@ -31,20 +29,19 @@ function HomePage() {
       });
       setIsKeyValid(res.status === 200);
     } catch {
-      console.log("falseB");
       setIsKeyValid(false);
     }
   };
 
   useEffect(() => {
     if (key) {
-      validateKey(key); // validate auto-filled key
+      validateKey(key);
     }
-  }, [key]); // runs once on mount
+  }, [key]);
 
   const handleKeyChange = async (newKey: string) => {
     changeKey(newKey);
-    validateKey(newKey); // silent check
+    validateKey(newKey);
   };
 
   const handleChatGPTCall = async () => {
@@ -95,14 +92,14 @@ function HomePage() {
 
       <div className="assess_buttons">
         <div>
-          <Button onClick={() => {handleAssessmentClick('/basic-question')}}>
+          <Button onClick={() => { handleAssessmentClick('/basic-question'); }}>
             <img className="basic_assess" src={basic} alt="Basic Assessment" />
           </Button>
           <div>A basic career assessment...</div>
         </div>
 
         <div>
-          <Button onClick={() => {handleAssessmentClick('/advanced-question')}}>
+          <Button onClick={() => { handleAssessmentClick('/advanced-question'); }}>
             <img className="detailed_assess" src={detailed} alt="Detailed Assessment" />
           </Button>
           <div>A detailed career assessment...</div>
@@ -116,7 +113,7 @@ function HomePage() {
             type="password"
             placeholder="Insert API Key Here"
             value={key}
-            onChange={e => {handleKeyChange(e.target.value)}}
+            onChange={(e) => handleKeyChange(e.target.value)}
           />
           <br />
           <Button

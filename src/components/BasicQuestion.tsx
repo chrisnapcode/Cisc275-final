@@ -74,10 +74,10 @@ export default function BasicQuestion() {
         { headers: { Authorization: `Bearer ${apiKey}` } }
       );
       const chatResponse = res.data.choices[0].message.content;
-      navigate('/feedback', { state: { chatResponse, responses, questions } });
+      navigate('/feedback', { state: { chatResponse, responses, questions, cameFromBasic: true } });
     } catch (error) {
       console.error('Error calling OpenAI:', error);
-      navigate('/feedback', { state: { chatResponse: 'Error calling OpenAI.', responses, questions } });
+      navigate('/feedback', { state: { chatResponse: 'Error calling OpenAI.', responses, questions, cameFromBasic: true } });
     } finally {
       setSubmitting(false);
     }

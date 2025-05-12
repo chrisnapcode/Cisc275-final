@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useOpenAI } from '../contexts/OpenAIContext';
@@ -7,24 +7,32 @@ import { Button } from 'react-bootstrap';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
+import { ref, set, get } from "firebase/database";
+import { auth, db } from "../firebase";
+
 type State = {
   chatResponse?: string;
   responses?: Record<string, string>;
   questions?: Question[];
+  cameFromBasic?: boolean;
 };
 
-export default function FeedbackPage() {
+export default function FeedbackPage(): React.JSX.Element {
   const { apiKey } = useOpenAI();
   const location = useLocation();
   const {
     chatResponse = 'No feedback available.',
     responses = {},
     questions = [],
+    cameFromBasic = false,
   } = (location.state ?? {}) as State;
 
   const [followUp, setFollowUp] = useState<string>('');
   const [followUpResponse, setFollowUpResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadedQuestions, setQuestions] = useState<Question[]>(questions);
+  const [loadedAnswers, setAnswers] = useState<Record<string, string>>(responses);
+  const [loadedChatResponse, setChatResponse] = useState<string>(chatResponse);
 
   const contentRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +43,68 @@ export default function FeedbackPage() {
     '4': 'agree',
     '5': 'strongly agree',
   };
+
+  useEffect(() => {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const questionsRef = ref(db, `basicFeedback/questions/${user.uid}`);
+    const feedbackRef = ref(db, `basicFeedback/feedback/${user.uid}`);
+
+    if (cameFromBasic) {
+      set(questionsRef, {
+        questions: questions.map(q => ({
+          id: q.id,
+          text: q.text,
+          responses: responses[q.id],
+        })),
+      }).catch(err => {
+        console.error("Failed to save questions:", err);
+      });
+
+      if (chatResponse && chatResponse !== "No feedback available.") {
+        set(feedbackRef, { feedback: chatResponse }).catch(err => {
+          console.error("Failed to save AI feedback:", err);
+        });
+      }
+    } else {
+      get(questionsRef)
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            const data = snapshot.val() as {
+              questions: { id: string; text: string; responses: string }[];
+            };
+
+            const qList = data.questions.map(q => ({
+              id: q.id,
+              text: q.text,
+              answered: false,
+            }));
+
+            const aMap: Record<string, string> = {};
+            data.questions.forEach(q => {
+              aMap[q.id] = q.responses;
+            });
+
+            setQuestions(qList);
+            setAnswers(aMap);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching questions:", error);
+        });
+
+      get(feedbackRef)
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            setChatResponse(snapshot.val().feedback);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching feedback:", error);
+        });
+    }
+  }, [cameFromBasic, chatResponse, questions, responses]);
 
   const handleFollowUp = async () => {
     if (!apiKey) {
@@ -49,10 +119,10 @@ export default function FeedbackPage() {
     try {
       const context = [
         'Self-assessment results:',
-        ...questions.map(q => `- ${q.text}: ${responses[q.id]}`),
+        ...loadedQuestions.map(q => `- ${q.text}: ${loadedAnswers[q.id]}`),
         '',
         'Initial AI feedback:',
-        chatResponse,
+        loadedChatResponse,
       ].join('\n');
 
       const messages = [
@@ -86,7 +156,6 @@ export default function FeedbackPage() {
     });
 
     const imgData = canvas.toDataURL('image/png');
-
     const pdf = new jsPDF('p', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
@@ -115,12 +184,12 @@ export default function FeedbackPage() {
       <div ref={contentRef}>
         <h2>Your Customized Feedback</h2>
 
-        {questions.length > 0 ? (
+        {loadedQuestions.length > 0 ? (
           <>
             <h3>Your Answers:</h3>
             <ul>
-              {questions.map(q => {
-                const raw = responses[q.id];
+              {loadedQuestions.map(q => {
+                const raw = loadedAnswers[q.id];
                 const label = scaleLabels[raw];
                 return (
                   <li key={q.id}>
@@ -131,11 +200,11 @@ export default function FeedbackPage() {
             </ul>
           </>
         ) : (
-          <p>No answers to display.</p>
+          <p>No answers to display. Try clicking on the blank user profile picture if you are signed in and you are sure have answered the quiz.</p>
         )}
 
         <h3>AI Feedback:</h3>
-        <pre style={{ whiteSpace: 'pre-wrap' }}>{chatResponse}</pre>
+        <pre style={{ whiteSpace: 'pre-wrap' }}>{loadedChatResponse}</pre>
 
         {followUpResponse && (
           <div className="mt-3 p-3 border rounded bg-light">
@@ -145,7 +214,6 @@ export default function FeedbackPage() {
         )}
       </div>
 
-      {/* Follow-up box */}
       <div className="mt-4">
         <h3>Ask for more advice:</h3>
         <textarea
@@ -153,7 +221,7 @@ export default function FeedbackPage() {
           rows={3}
           placeholder="Type a follow-up question here..."
           value={followUp}
-          onChange={e => {setFollowUp(e.target.value)}}
+          onChange={e => { setFollowUp(e.target.value); }}
           disabled={loading}
         />
         <Button
@@ -165,7 +233,6 @@ export default function FeedbackPage() {
         </Button>
       </div>
 
-      {/* Export button */}
       <div className="mt-4">
         <Button variant="success" onClick={handleDownloadPDF}>
           Save as PDF
