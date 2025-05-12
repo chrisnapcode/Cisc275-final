@@ -7,6 +7,7 @@ import basic from '../basic-assessment.jpg';
 import detailed from '../detailed-assessment.jpg';
 import './HomePage.css';
 import { useOpenAI } from '../contexts/OpenAIContext';
+import { useEffect } from 'react';
 
 function HomePage() {
   const { apiKey: key, setApiKey: changeKey } = useOpenAI();
@@ -17,6 +18,7 @@ function HomePage() {
 
   const validateKey = async (newKey: string): Promise<void> => {
     if (!newKey.trim()) {
+      console.log("falseA");
       setIsKeyValid(false);
       return;
     }
@@ -29,9 +31,16 @@ function HomePage() {
       });
       setIsKeyValid(res.status === 200);
     } catch {
+      console.log("falseB");
       setIsKeyValid(false);
     }
   };
+
+  useEffect(() => {
+    if (key) {
+      validateKey(key); // validate auto-filled key
+    }
+  }, [key]); // runs once on mount
 
   const handleKeyChange = async (newKey: string) => {
     changeKey(newKey);
@@ -80,7 +89,7 @@ function HomePage() {
   };
 
   return (
-    <div className="homepage-container"> {/* Wrap content with this class */}
+    <div className="homepage-container">
       <div className="home-title">Career Finder</div>
       <div>Select your assessment:</div>
 

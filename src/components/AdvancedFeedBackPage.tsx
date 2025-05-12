@@ -142,7 +142,6 @@ export default function AdvancedFeedbackPage() {
     }
   };
 
-  // PDF Export Handler
   const handleDownloadPDF = async () => {
     if (!contentRef.current) return;
 
@@ -164,7 +163,6 @@ export default function AdvancedFeedbackPage() {
     let heightLeft = imgHeight;
     let position = 0;
 
-    // First page
     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
     heightLeft -= pageHeight;
 
