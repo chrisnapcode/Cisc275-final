@@ -5,6 +5,7 @@ import axios from 'axios';
 import '../App.css';
 import basic from '../basic-assessment.jpg';
 import detailed from '../detailed-assessment.jpg';
+import './HomePage.css';
 import { useOpenAI } from '../contexts/OpenAIContext';
 
 function HomePage() {
@@ -79,7 +80,7 @@ function HomePage() {
   };
 
   return (
-    <div className="App">
+    <div className="homepage-container"> {/* Wrap content with this class */}
       <div className="home-title">Career Finder</div>
       <div>Select your assessment:</div>
 
@@ -106,7 +107,7 @@ function HomePage() {
             type="password"
             placeholder="Insert API Key Here"
             value={key}
-            onChange={e => handleKeyChange(e.target.value)}
+            onChange={e => {handleKeyChange(e.target.value)}}
           />
           <br />
           <Button
