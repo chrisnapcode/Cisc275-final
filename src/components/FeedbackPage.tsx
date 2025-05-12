@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useOpenAI } from '../contexts/OpenAIContext';
 import type { Question } from '../components/QuestionCard';
+import { Button } from 'react-bootstrap';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 type State = {
   chatResponse?: string;
@@ -23,7 +26,8 @@ export default function FeedbackPage() {
   const [followUpResponse, setFollowUpResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
 
-  // map numeric choice to descriptor
+  const contentRef = useRef<HTMLDivElement>(null);
+
   const scaleLabels: Record<string, string> = {
     '1': 'strongly disagree',
     '2': 'disagree',
@@ -31,7 +35,7 @@ export default function FeedbackPage() {
     '4': 'agree',
     '5': 'strongly agree',
   };
- 
+
   const handleFollowUp = async () => {
     if (!apiKey) {
       alert('Missing API key—please enter it on the home screen.');
@@ -43,16 +47,14 @@ export default function FeedbackPage() {
     setFollowUpResponse('');
 
     try {
-      // Build context string
       const context = [
         'Self-assessment results:',
         ...questions.map(q => `- ${q.text}: ${responses[q.id]}`),
         '',
         'Initial AI feedback:',
-        chatResponse
+        chatResponse,
       ].join('\n');
 
-      // Assemble messages
       const messages = [
         { role: 'system', content: 'You are a career coach.' },
         { role: 'user', content: context },
@@ -74,33 +76,76 @@ export default function FeedbackPage() {
     }
   };
 
+  const handleDownloadPDF = async () => {
+    if (!contentRef.current) return;
+
+    const canvas = await html2canvas(contentRef.current, {
+      scale: 2,
+      useCORS: true,
+      scrollY: -window.scrollY,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position -= pageHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save('basic-feedback.pdf');
+  };
+
   return (
     <div className="container mt-4">
-      <h2>Your Customized Feedback</h2>
+      <div ref={contentRef}>
+        <h2>Your Customized Feedback</h2>
 
-      {questions.length > 0 ? (
-        <>
-          <h3>Your Answers:</h3>
-          <ul>
-            {questions.map(q => {
-              const raw = responses[q.id];
-              const label = scaleLabels[raw];
-              return (
-                <li key={q.id}>
-                  <strong>{q.text}</strong>: {raw} ({label})
-                </li>
-              );
-            })}
-          </ul>
-        </>
-      ) : (
-        <p>No answers to display.</p>
-      )}
+        {questions.length > 0 ? (
+          <>
+            <h3>Your Answers:</h3>
+            <ul>
+              {questions.map(q => {
+                const raw = responses[q.id];
+                const label = scaleLabels[raw];
+                return (
+                  <li key={q.id}>
+                    <strong>{q.text}</strong>: {raw} ({label})
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        ) : (
+          <p>No answers to display.</p>
+        )}
 
-      <h3>AI Feedback:</h3>
-      <pre style={{ whiteSpace: 'pre-wrap' }}>{chatResponse}</pre>
+        <h3>AI Feedback:</h3>
+        <pre style={{ whiteSpace: 'pre-wrap' }}>{chatResponse}</pre>
 
-      {/* ChatGPT follow-up box */}
+        {followUpResponse && (
+          <div className="mt-3 p-3 border rounded bg-light">
+            <h4>Follow-up Advice</h4>
+            <pre style={{ whiteSpace: 'pre-wrap' }}>{followUpResponse}</pre>
+          </div>
+        )}
+      </div>
+
+      {/* Follow-up box */}
       <div className="mt-4">
         <h3>Ask for more advice:</h3>
         <textarea
@@ -108,24 +153,24 @@ export default function FeedbackPage() {
           rows={3}
           placeholder="Type a follow-up question here..."
           value={followUp}
-          onChange={e => { setFollowUp(e.target.value); }}
+          onChange={e => {setFollowUp(e.target.value)}}
           disabled={loading}
         />
-        <button
-          className="btn btn-primary mt-2"
+        <Button
+          className="mt-2"
           onClick={handleFollowUp}
           disabled={loading || !followUp.trim()}
         >
           {loading ? 'Asking…' : 'Ask'}
-        </button>
+        </Button>
       </div>
 
-      {followUpResponse && (
-        <div className="mt-3 p-3 border rounded bg-light">
-          <h4>Follow-up Advice</h4>
-          <pre style={{ whiteSpace: 'pre-wrap' }}>{followUpResponse}</pre>
-        </div>
-      )}
+      {/* Export button */}
+      <div className="mt-4">
+        <Button variant="success" onClick={handleDownloadPDF}>
+          Save as PDF
+        </Button>
+      </div>
 
       <Link to="/" className="btn btn-link mt-3">
         ← Back to Home

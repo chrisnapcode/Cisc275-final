@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 import { useOpenAI } from '../contexts/OpenAIContext';
 import type { Question } from '../components/QuestionCard';
 import { auth, db } from "../firebase";
 import { ref, set, get } from "firebase/database";
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+/*import { content } from 'html2canvas/dist/types/css/property-descriptors/content';*/
 
 type State = {
   chatResponse?: string;
@@ -31,13 +34,14 @@ export default function AdvancedFeedbackPage() {
   const [loadedAnswers, setAnswers] = useState<Record<string, string>>(answers);
   const [loadedChatResponse, setChatResponse] = useState<string>(chatResponse);
 
+  const contentRef = useRef<HTMLDivElement>(null); // for PDF export
+
   useEffect(() => {
     const user = auth.currentUser;
 
     if (!user) return;
 
     if (cameFromAdvanced) {
-      // Save to Firebase
       const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`);
       set(questionsRef, {
         questions: questions.map(q => ({
@@ -58,7 +62,6 @@ export default function AdvancedFeedbackPage() {
         console.error("Failed to save AI feedback:", err);
       });
     } else {
-      // Load from Firebase
       const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`);
       get(questionsRef)
         .then(snapshot => {
@@ -70,7 +73,7 @@ export default function AdvancedFeedbackPage() {
             const qList = data.questions.map(q => ({
               id: q.id,
               text: q.text,
-              answered: false, // Default value for 'answered'
+              answered: false,
             }));
 
             const aMap: Record<string, string> = {};
@@ -139,57 +142,99 @@ export default function AdvancedFeedbackPage() {
     }
   };
 
+  // PDF Export Handler
+  const handleDownloadPDF = async () => {
+    if (!contentRef.current) return;
+
+    const canvas = await html2canvas(contentRef.current, {
+      scale: 2,
+      useCORS: true,
+      scrollY: -window.scrollY,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+
+    const imgWidth = pageWidth;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // First page
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+    heightLeft -= pageHeight;
+
+    while (heightLeft > 0) {
+      position -= pageHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+    }
+
+    pdf.save('advanced-feedback.pdf');
+  };
+
   return (
     <div className="container mt-4">
-      <h2>Your Customized Advanced Feedback</h2>
+      <div ref={contentRef}>
+        <h2>Your Customized Advanced Feedback</h2>
 
-      {loadedQuestions.length > 0 ? (
-        <>
-          <h3>Your Answers:</h3>
-          <ul>
-            {loadedQuestions.map(q => (
-              <li key={q.id}>
-                <strong>{q.text}</strong>: {loadedAnswers[q.id]}
-              </li>
-            ))}
-          </ul>
-        </>
-      ) : (
-        <p>No answers to display.</p>
-      )}
+        {loadedQuestions.length > 0 ? (
+          <>
+            <h3>Your Answers:</h3>
+            <ul>
+              {loadedQuestions.map(q => (
+                <li key={q.id}>
+                  <strong>{q.text}</strong>: {loadedAnswers[q.id]}
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : (
+          <p>No answers to display.</p>
+        )}
 
-      <h3>AI Feedback:</h3>
-      <pre style={{ whiteSpace: 'pre-wrap' }}>{loadedChatResponse}</pre>
+        <h3>AI Feedback:</h3>
+        <pre style={{ whiteSpace: 'pre-wrap' }}>{loadedChatResponse}</pre>
 
-      <div className="mt-4">
-        <h3>Ask for more advice:</h3>
-        <textarea
-          className="form-control"
-          rows={3}
-          placeholder="Type a follow-up question here..."
-          value={followUp}
-          onChange={e => { setFollowUp(e.target.value); }}
-          disabled={loading}
-        />
-        <button
-          className="btn btn-primary mt-2"
-          onClick={handleFollowUp}
-          disabled={loading || !followUp.trim()}
-        >
-          {loading ? 'Asking…' : 'Ask'}
-        </button>
+
+        {followUpResponse && (
+          <div className="mt-3 p-3 border rounded bg-light">
+            <h4>Follow-up Advice</h4>
+            <pre style={{ whiteSpace: 'pre-wrap' }}>{followUpResponse}</pre>
+          </div>
+        )}
       </div>
-
-      {followUpResponse && (
-        <div className="mt-3 p-3 border rounded bg-light">
-          <h4>Follow-up Advice</h4>
-          <pre style={{ whiteSpace: 'pre-wrap' }}>{followUpResponse}</pre>
+      <div className="mt-4">
+          <h3>Ask for more advice:</h3>
+          <textarea
+            className="form-control"
+            rows={3}
+            placeholder="Type a follow-up question here..."
+            value={followUp}
+            onChange={e => { setFollowUp(e.target.value); }}
+            disabled={loading}
+          />
+          <button
+            className="btn btn-primary mt-2"
+            onClick={handleFollowUp}
+            disabled={loading || !followUp.trim()}
+          >
+            {loading ? 'Asking…' : 'Ask'}
+          </button>
         </div>
-      )}
-
-      <Link to="/" className="btn btn-link mt-3">
-        ← Back to Home
-      </Link>
+      <div className="mt-4">
+          <button className="btn btn-success me-2" onClick={handleDownloadPDF}>
+            Save as PDF
+          </button>
+          <Link to="/" className="btn btn-link mt-2">
+            ← Back to Home
+          </Link>
+        </div>
     </div>
   );
 }
