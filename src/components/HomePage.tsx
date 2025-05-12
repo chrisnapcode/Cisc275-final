@@ -1,24 +1,46 @@
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../App.css';
 import basic from '../basic-assessment.jpg';
 import detailed from '../detailed-assessment.jpg';
 import './HomePage.css';
-
-// Pull in OpenAI Context hook
 import { useOpenAI } from '../contexts/OpenAIContext';
 
 function HomePage() {
   const { apiKey: key, setApiKey: changeKey } = useOpenAI();
-
   const [chatResponse, setChatResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
+  const [isKeyValid, setIsKeyValid] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const validateKey = async (newKey: string): Promise<void> => {
+    if (!newKey.trim()) {
+      setIsKeyValid(false);
+      return;
+    }
+
+    try {
+      const res = await axios.get('https://api.openai.com/v1/models', {
+        headers: {
+          Authorization: `Bearer ${newKey}`,
+        },
+      });
+      setIsKeyValid(res.status === 200);
+    } catch {
+      setIsKeyValid(false);
+    }
+  };
+
+  const handleKeyChange = async (newKey: string) => {
+    changeKey(newKey);
+    validateKey(newKey); // silent check
+  };
 
   const handleChatGPTCall = async () => {
-    if (!key) {
-      alert('Please enter your API key.');
+    if (!key || !isKeyValid) {
+      alert('Please enter a valid OpenAI API key first.');
       return;
     }
 
@@ -49,6 +71,14 @@ function HomePage() {
     }
   };
 
+  const handleAssessmentClick = (path: string) => {
+    if (!key || !isKeyValid) {
+      alert('Please enter a valid OpenAI API key first.');
+      return;
+    }
+    navigate(path);
+  };
+
   return (
     <div className="homepage-container"> {/* Wrap content with this class */}
       <div className="home-title">Career Finder</div>
@@ -56,20 +86,16 @@ function HomePage() {
 
       <div className="assess_buttons">
         <div>
-          <Link to="/basic-question">
-            <Button>
-              <img className="basic_assess" src={basic} alt="Basic Assessment" />
-            </Button>
-          </Link>
+          <Button onClick={() => {handleAssessmentClick('/basic-question')}}>
+            <img className="basic_assess" src={basic} alt="Basic Assessment" />
+          </Button>
           <div>A basic career assessment...</div>
         </div>
 
         <div>
-          <Link to="/advanced-question">
-            <Button>
-              <img className="detailed_assess" src={detailed} alt="Detailed Assessment" />
-            </Button>
-          </Link>
+          <Button onClick={() => {handleAssessmentClick('/advanced-question')}}>
+            <img className="detailed_assess" src={detailed} alt="Detailed Assessment" />
+          </Button>
           <div>A detailed career assessment...</div>
         </div>
       </div>
@@ -81,10 +107,14 @@ function HomePage() {
             type="password"
             placeholder="Insert API Key Here"
             value={key}
-            onChange={(e) => { changeKey(e.target.value); }} // Now updates Context
+            onChange={e => {handleKeyChange(e.target.value)}}
           />
           <br />
-          <Button className="Submit-Button" onClick={handleChatGPTCall} disabled={loading}>
+          <Button
+            className="Submit-Button"
+            onClick={handleChatGPTCall}
+            disabled={loading}
+          >
             {loading ? 'Talking to GPT...' : 'Chat with GPT'}
           </Button>
         </Form>
