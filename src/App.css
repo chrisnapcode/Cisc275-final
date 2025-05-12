@@ -187,3 +187,7 @@ button, input[type="text"], textarea {
   font-size: 16px;
 }
 
+body {
+  background: linear-gradient(135deg, #1a2229, #2575fc); /* Purple to blue gradient */
+  color: #fff; /* White text for contrast */
+}
