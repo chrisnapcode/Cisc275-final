@@ -5,8 +5,8 @@ const ChatGPTBox = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [response, setResponse] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
-
-  const callChatGPT = async () => {
+  
+  const callChatGPT = async (): Promise<void> => {
     if (!apiKey) {
       alert('Enter your API key first!'); //gives an alert if there is no api key
       return;

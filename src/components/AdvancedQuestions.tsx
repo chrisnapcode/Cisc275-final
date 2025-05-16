@@ -34,7 +34,7 @@ interface UserProfile {
   interests: string;
 }
 
-function AdvancedQuestions() {
+function AdvancedQuestions(): React.JSX.Element {
   const [progress, setProgress] = useState<number>(0); // tracks the user's info
   const answeredSet = useRef<Set<string>>(new Set());
   const [answers, setAnswers] = useState<{ [id: string]: string }>({});

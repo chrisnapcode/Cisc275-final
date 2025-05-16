@@ -49,7 +49,7 @@ module.exports = {
 
         // https://typescript-eslint.io/rules/no-explicit-any
         // Disallow the any type.
-        //"@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/no-explicit-any": "error",
 
         // https://typescript-eslint.io/rules/no-unsafe-assignment
         // Disallow assigning a value with type any to variables and properties.
@@ -58,6 +58,22 @@ module.exports = {
         // https://typescript-eslint.io/rules/no-unsafe-return
         // Disallow returning a value with type any from a function.
         "@typescript-eslint/no-unsafe-return": "error",
+
+                // https://typescript-eslint.io/rules/ban-types
+        // Disallow certain types.
+        
+        "@typescript-eslint/ban-types": [
+            "error",
+            {
+                types: {
+                    unknown:
+                        "That is not allowed in this course. You should be able to specify the type more clearly!",
+                    any: "That is not allowed in this course. You should be able to figure out the type!",
+                },
+            },
+        ],
+        
+
         
         // https://typescript-eslint.io/rules/no-array-constructor
         // Disallow generic Array constructors.
