@@ -16,7 +16,7 @@ type State = {
   cameFromAdvanced?: boolean;
 };
 
-export default function AdvancedFeedbackPage() {
+export default function AdvancedFeedbackPage(): React.JSX.Element {
   const { apiKey } = useOpenAI();
   const location = useLocation();
   const {

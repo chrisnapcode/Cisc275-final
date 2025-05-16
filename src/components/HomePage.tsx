@@ -15,7 +15,7 @@ function HomePage(): React.JSX.Element {
   const [isKeyValid, setIsKeyValid] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  const validateKey = async (newKey: string): Promise<void> => {
+  const validateKey = async (newKey: string) => {
     if (!newKey.trim()) {
       setIsKeyValid(false);
       return;
@@ -28,7 +28,8 @@ function HomePage(): React.JSX.Element {
         },
       });
       setIsKeyValid(res.status === 200);
-    } catch {
+    } catch (error) {
+      console.error('Error validating API key:', error);
       setIsKeyValid(false);
     }
   };

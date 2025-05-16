@@ -20,7 +20,7 @@ const questions: Question[] = [
   { id: "q7", text: "I would enjoy leading a team or taking on a leadership role.", answered: false },
 ];
 
-export default function BasicQuestion() {
+export default function BasicQuestion(): React.JSX.Element {
   const [progress, setProgress] = useState<number>(0);//set the progress bar's state
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [responses, setResponses] = useState<Record<string, string>>({});
