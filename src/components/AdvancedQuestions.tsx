@@ -77,9 +77,9 @@ function AdvancedQuestions(): React.JSX.Element {
     let profileDataText = '';
     if (user) {
       const userId = user.uid;
-      const userRef = ref(db, `moreUserInfo/${userId}`);
+      const userRef = ref(db, `moreUserInfo/${userId}`); // Fetch user data from the database
       const snapshot = await get(userRef);
-      if (snapshot.exists()) {
+      if (snapshot.exists()) { // If user has a form, get the data and fill out the form with it
         const data = snapshot.val() as UserProfile;
     
         profileDataText = `
@@ -90,7 +90,7 @@ function AdvancedQuestions(): React.JSX.Element {
     - Soft Skills: ${data.softSkills}
     - Experience: ${data.experience}
     - Interests: ${data.interests}
-        `.trim();
+        `.trim(); //setting the profile data text
       }
     }
     const prompt = [

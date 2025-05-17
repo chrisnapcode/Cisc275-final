@@ -41,11 +41,13 @@ export default function AdvancedFeedbackPage(): React.JSX.Element {
   useEffect(() => {
     const user = auth.currentUser;
 
-
-    if (cameFromAdvanced) {
+    //checks if the user came from the advanced questions page
+    //if the user came from the advanced questions page, it will save the questions and feedback to the database
+    //if the user did not come from the advanced questions page, it will fetch the questions and feedback from the database
+    if (cameFromAdvanced) { 
       if (user) {
       
-      const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`);
+      const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`); //Set a reference to user's questions
       set(questionsRef, {
         questions: questions.map(q => ({
           id: q.id,
@@ -54,21 +56,23 @@ export default function AdvancedFeedbackPage(): React.JSX.Element {
         })),
       }).catch(err => {
         console.error("Failed to save questions:", err);
-      });
+      }); //Set the questions to the database, either overwriting or creating a new one
 
       if (!chatResponse || chatResponse === "No feedback available.") return;
 
-      const feedbackRef = ref(db, `advancedFeedback/feedback/${user.uid}`);
+      const feedbackRef = ref(db, `advancedFeedback/feedback/${user.uid}`); //Set a reference to user's feedback
       set(feedbackRef, {
         feedback: chatResponse,
       }).catch(err => {
         console.error("Failed to save AI feedback:", err);
-      });
+      }); //Set the feedback to the database, either overwriting or creating a new one
+
       }
     } else {
+      // Fetching questions and feedback from the database
       if(user){
-      const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`);
-      get(questionsRef)
+      const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`); //reference to user's questions answers
+      get(questionsRef) // Get the users questions from the database
         .then(snapshot => {
           if (snapshot.exists()) {
             const data = snapshot.val() as {
