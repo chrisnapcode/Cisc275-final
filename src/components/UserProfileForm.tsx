@@ -33,8 +33,7 @@ const UserProfileForm: React.FC = () => {
       }
 
       const userId = user.uid;
-      const userRef = ref(db, `moreUserInfo/${userId}`);
-      const snapshot = await get(userRef);
+      const snapshot = await get(ref(db, `moreUserInfo/${userId}`));
 
       if (snapshot.exists()) {
         const data = snapshot.val() as UserProfile;
