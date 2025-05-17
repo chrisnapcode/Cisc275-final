@@ -35,13 +35,16 @@ export default function AdvancedFeedbackPage(): React.JSX.Element {
   const [loadedChatResponse, setChatResponse] = useState<string>(chatResponse);
 
   const contentRef = useRef<HTMLDivElement>(null); // for PDF export
-
+  if(cameFromAdvanced){
+    alert("Your answers have been proccessed")
+  }
   useEffect(() => {
     const user = auth.currentUser;
 
-    if (!user) return;
 
     if (cameFromAdvanced) {
+      if (user) {
+      
       const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`);
       set(questionsRef, {
         questions: questions.map(q => ({
@@ -61,7 +64,9 @@ export default function AdvancedFeedbackPage(): React.JSX.Element {
       }).catch(err => {
         console.error("Failed to save AI feedback:", err);
       });
+      }
     } else {
+      if(user){
       const questionsRef = ref(db, `advancedFeedback/questions/${user.uid}`);
       get(questionsRef)
         .then(snapshot => {
@@ -100,7 +105,8 @@ export default function AdvancedFeedbackPage(): React.JSX.Element {
           console.error("Error fetching feedback:", error);
         });
     }
-  }, [cameFromAdvanced, chatResponse, questions, answers]);
+  }
+}, [cameFromAdvanced, chatResponse, questions, answers]);
 
   const handleFollowUp = async () => {
     if (!apiKey) {

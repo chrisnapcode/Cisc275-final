@@ -43,11 +43,14 @@ export default function FeedbackPage(): React.JSX.Element {
     '4': 'agree',
     '5': 'strongly agree',
   };
+  if (cameFromBasic) {
+    alert("Your answers have been processed");
+  }
 
   useEffect(() => {
     const user = auth.currentUser;
-    if (!user) return;
-
+    if (user) {
+    
     const questionsRef = ref(db, `basicFeedback/questions/${user.uid}`);
     const feedbackRef = ref(db, `basicFeedback/feedback/${user.uid}`);
 
@@ -68,6 +71,11 @@ export default function FeedbackPage(): React.JSX.Element {
         });
       }
     } else {
+      const questionsRef = ref(db, `basicFeedback/questions/${user.uid}`);
+      const feedbackRef = ref(db, `basicFeedback/feedback/${user.uid}`);
+  
+  
+    
       get(questionsRef)
         .then(snapshot => {
           if (snapshot.exists()) {
@@ -104,7 +112,7 @@ export default function FeedbackPage(): React.JSX.Element {
           console.error("Error fetching feedback:", error);
         });
     }
-  }, [cameFromBasic, chatResponse, questions, responses]);
+  }}, [cameFromBasic, chatResponse, questions, responses]);
 
   const handleFollowUp = async () => {
     if (!apiKey) {
