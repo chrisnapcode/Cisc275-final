@@ -5,10 +5,22 @@ import axios from 'axios';
 import QuestionCard, { Question } from './QuestionCard';
 import { Button } from 'react-bootstrap';
 import ProgressBar from './ProgressBar';
-
+import { auth } from '../firebase';
+import { ref, get } from 'firebase/database';
+import { db } from '../firebase';
 interface ChatCompletionResponse {
   choices: { message: { content: string } }[];
 }
+
+interface UserProfile {
+  age: string;
+  hasCollegeDegree: boolean;
+  collegeDegree: string;
+  softSkills: string;
+  experience: string;
+  interests: string;
+}
+
 //list of beautiful questions 
 const questions: Question[] = [
   { id: "q1", text: "I enjoy working independently without close supervision.", answered: false },
@@ -51,16 +63,39 @@ export default function BasicQuestion(): React.JSX.Element {
       return;
     }
     setSubmitting(true);
+    const user = auth.currentUser;
+    let profileDataText = '';
+    if (user) {
+      const userId = user.uid;
+      const userRef = ref(db, `moreUserInfo/${userId}`);
+      const snapshot = await get(userRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val() as UserProfile;
+    
+        profileDataText = `
+    User Profile:
+    - Age: ${data.age}
+    - Has College Degree: ${data.hasCollegeDegree ? 'Yes' : 'No'}
+    - Degree: ${data.collegeDegree}
+    - Soft Skills: ${data.softSkills}
+    - Experience: ${data.experience}
+    - Interests: ${data.interests}
+        `.trim();
+      }
+    }
+
 
     // New instruction: career-focused, actionable, easy to read
     const instruction =
       'You are a career coach. Based on the self-assessment results below (1 = strongly disagree, 5 = strongly agree), ' +
       'provide clear, actionable career advice tailored to the individual. ' +
-      'Organize your response under headings and use bullet points for specific steps or tips, making it easy to read and implement.' + 'focus on actual career paths, not just general advice.';
+      'Organize your response under headings and use bullet points for specific steps or tips, making it easy to read and implement. ' + 
+      'Focus on actual career paths, not just general advice.';
 
     // Build prompt
     const prompt = [
       instruction,
+      profileDataText,
       ...questions.map(q => `Q: ${q.text}\nA: ${responses[q.id]}`)
     ].join('\n\n');
 
