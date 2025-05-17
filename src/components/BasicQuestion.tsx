@@ -34,9 +34,9 @@ const questions: Question[] = [
 
 export default function BasicQuestion(): React.JSX.Element {
   const [progress, setProgress] = useState<number>(0);//set the progress bar's state
-  const [showPopup, setShowPopup] = useState<boolean>(false);
-  const [responses, setResponses] = useState<Record<string, string>>({});
-  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [showPopup, setShowPopup] = useState<boolean>(false);//Popup state for when the quiz is complete
+  const [responses, setResponses] = useState<Record<string, string>>({});//Sets responses to the questions
+  const [submitting, setSubmitting] = useState<boolean>(false);//set the state of the submit button
 
   const { apiKey } = useOpenAI();
   const navigate = useNavigate();
@@ -63,14 +63,14 @@ export default function BasicQuestion(): React.JSX.Element {
       return;
     }
     setSubmitting(true);
-    const user = auth.currentUser;
+    const user = auth.currentUser; // Get the current user
     let profileDataText = '';
     if (user) {
       const userId = user.uid;
       const userRef = ref(db, `moreUserInfo/${userId}`);
       const snapshot = await get(userRef);
       if (snapshot.exists()) {
-        const data = snapshot.val() as UserProfile;
+        const data = snapshot.val() as UserProfile; //If user is logged in, and data exists, get the data
     
         profileDataText = `
     User Profile:
@@ -80,7 +80,7 @@ export default function BasicQuestion(): React.JSX.Element {
     - Soft Skills: ${data.softSkills}
     - Experience: ${data.experience}
     - Interests: ${data.interests}
-        `.trim();
+        `.trim();//setting the profile data text
       }
     }
 

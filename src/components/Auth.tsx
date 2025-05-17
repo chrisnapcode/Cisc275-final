@@ -9,8 +9,8 @@ import {
 } from "firebase/auth";
 
 const Auth: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const Auth: React.FC = () => {
     return () => { unsubscribe(); };
   }, [navigate]);
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = async () => { // gooogle sign in
     try {
       await signInWithPopup(auth, provider);
       navigate("/");
@@ -33,7 +33,7 @@ const Auth: React.FC = () => {
     }
   };
 
-  const handleEmailSignIn = async (e: React.FormEvent) => {
+  const handleEmailSignIn = async (e: React.FormEvent) => { // email sign in
     e.preventDefault();
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -43,7 +43,7 @@ const Auth: React.FC = () => {
     }
   };
 
-  const handleSignUp = async () => {
+  const handleSignUp = async () => { // email sign up
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       navigate("/");

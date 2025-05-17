@@ -53,6 +53,9 @@ export default function FeedbackPage(): React.JSX.Element {
     
     const questionsRef = ref(db, `basicFeedback/questions/${user.uid}`);
     const feedbackRef = ref(db, `basicFeedback/feedback/${user.uid}`);
+    //checks if the user came from the basic questions page
+    //if the user came from the basic questions page, it will save the questions and feedback to the database
+    //if the user did not come from the basic questions page, it will fetch the questions and feedback from the database
 
     if (cameFromBasic) {
       set(questionsRef, {

@@ -15,7 +15,7 @@ interface UserProfile {
 
 const UserProfileForm: React.FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<UserProfile>({
+  const [formData, setFormData] = useState<UserProfile>({ //questions user will answer
     age: "",
     hasCollegeDegree: false,
     collegeDegree: "",
@@ -33,10 +33,10 @@ const UserProfileForm: React.FC = () => {
       }
 
       const userId = user.uid;
-      const snapshot = await get(ref(db, `moreUserInfo/${userId}`));
+      const snapshot = await get(ref(db, `moreUserInfo/${userId}`)); // Fetch user data from the database
 
       if (snapshot.exists()) {
-        const data = snapshot.val() as UserProfile;
+        const data = snapshot.val() as UserProfile; // If user has a form, get the data and fill out the form with it
         setFormData({
           age: data.age || "",
           hasCollegeDegree: data.hasCollegeDegree || false,
@@ -69,7 +69,7 @@ const UserProfileForm: React.FC = () => {
     if (!formData.hasCollegeDegree){
       formData.collegeDegree = "";
     }
-    set(ref(db, `moreUserInfo/${userId}`), formData);
+    set(ref(db, `moreUserInfo/${userId}`), formData); // Save the form data to the database
     console.log("User Profile saved:", formData);
     alert("Information saved successfully!");
     navigate("/");
@@ -78,7 +78,6 @@ const UserProfileForm: React.FC = () => {
   return (
     <form className="user-profile-form" onSubmit={handleSubmit}>
       <h2>User Profile</h2>
-
       <label>
         Age:
         <input
