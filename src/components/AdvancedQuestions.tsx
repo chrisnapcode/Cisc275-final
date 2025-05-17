@@ -105,7 +105,7 @@ function AdvancedQuestions(): React.JSX.Element {
         'https://api.openai.com/v1/chat/completions',
         {
           model: 'gpt-3.5-turbo',
-          messages: [{ role: 'user', content: prompt }],
+          messages: [{ role: "system", content: "You are a career coach." }, { role: 'user', content: prompt }],
         },
         { headers: { Authorization: `Bearer ${apiKey}` } }
       );
