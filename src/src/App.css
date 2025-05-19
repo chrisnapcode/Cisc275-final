@@ -1,0 +1,510 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 0.2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.api-box {
+  margin-top: 375px
+}
+
+.home-title {
+  font-size: 50px;
+  font-weight: 500;
+}
+
+.basic_assess {
+  height: 400px;
+}
+
+.detailed_assess {
+  height: 400px
+}
+
+.assess_buttons { 
+  display: flex;
+  justify-content: center;  /* Centers the images horizontally */
+  align-items: center;  /* Centers them vertically */
+  gap: 100px; /* Adds spacing between images */
+  width: 100%; /* Ensures full width */
+  height: 100px; /* Adjust height as needed */
+  margin-top: 225px;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.nav-bar {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #f2f2f2;
+  padding: 10px 20px;
+  border-bottom: 1px solid #ccc;
+}
+
+.right-nav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.right-nav a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.right-nav a:hover {
+  color: #007bff;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.profile-pic img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dropdown-content {
+  position: absolute;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}
+
+.dropdown-content a {
+  display: block;
+  padding: 10px 20px;
+  text-decoration: none;
+  color: #333;
+  transition: background-color 0.3s;
+}
+.dropdown-content a:hover {
+  background-color: #f2f2f2;
+}
+
+
+
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
+
+.auth-box {
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+}
+
+.auth-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.auth-input {
+  padding: 12px 16px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  transition: border-color 0.3s;
+}
+
+.auth-input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.auth-button {
+  padding: 14px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.google-button {
+  background-color: #db4437;
+  color: white;
+}
+
+.google-button:hover {
+  background-color: #c23321;
+}
+
+.email-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.email-button:hover {
+  background-color: #0056b3;
+}
+
+.signup-button {
+  background-color: #28a745;
+  color: white;
+}
+
+.signup-button:hover {
+  background-color: #218838;
+}
+
+.user-profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 700px;
+  width: 90%;      
+  margin: 40px auto;
+  padding: 36px;     
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: sans-serif;
+}
+
+.user-profile-form h2 {
+  text-align: center;
+}
+
+.user-profile-form label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.user-profile-form input,
+.user-profile-form textarea {
+  margin-top: 6px;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+}
+
+.user-profile-form button {
+  margin-top: 12px;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.user-profile-form button:hover {
+  background-color: #0056b3;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.btn {
+  background-color: #6bb8c1;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #6bb8c1;
+  transform: scale(1.05);
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card-body {
+  padding: 20px;
+  background-color: #f9f9f9;
+}
+
+/* Form Inputs */
+input[type="text"], textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+input[type="text"]:focus, textarea:focus {
+  border-color: #4CAF50;
+  outline: none;
+}
+
+/* Progress Bar */
+.progress-bar-container {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  height: 20px;
+  margin: 20px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  border-radius: 15px;
+  background-color: #4CAF50;
+  width: 0;
+  transition: width 0.3s ease-in-out;
+}
+
+/* Popups */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+}
+
+.popup-content h2 {
+  color: #333;
+}
+
+/* Container and Layout */
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+}
+
+h1, h2, h3 {
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+}
+
+button, input[type="text"], textarea {
+  font-size: 16px;
+}
+
+/* Apply gradient background to the entire app */
+body {
+  background: linear-gradient(135deg, #6e7a8d, #a3b5c5); /* Gradient background */
+  margin: 0;
+  font-family: Arial, sans-serif; /* Adjust this to your preferred font */
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Ensures content stays in place */
+}
+
+/* Homepage container */
+.homepage-container {
+  position: relative;
+  min-height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1; /* Ensures content stays above the background */
+}
+
+/* Button container */
+.assess_buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+  width: 100%;
+  height: auto;
+  margin-top: 100px;
+}
+
+/* Button styling */
+.assess_buttons button {
+  border-radius: 10px;
+  padding: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.assess_buttons button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Image styling */
+.basic_assess, .detailed_assess {
+  height: 300px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Improve visibility of assessment text */
+.assess_buttons div {
+  text-align: center;
+  color: #333;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Form and buttons container */
+.api-box {
+  margin-top: 50px;
+}
+
+.api-box .Submit-Button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.api-box .Submit-Button:hover {
+  background-color: #0056b3;
+}
+
+/* Header styling */
+.home-title {
+  color: white;
+  font-size: 36px;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Container for content */
+.container {
+  background-color: rgba(255, 255, 255, 0.85); /* Lightened background */
+  padding: 30px;
+  border-radius: 10px;
+  position: relative;
+  z-index: 1;
+  width: 80%;
+  margin-top: 40px;
+}
+
+/* General page layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+}
+
+/* Progress bar container - Initially placed below the "Basic Self-Assessment" text */
+.progress-bar-container {
+  position: absolute;  /* Start as absolute */
+  top: 100px;  /* Adjust this value to position it right below the "Basic Self-Assessment" text */
+  left: 0;
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 15px;
+  height: 20px;
+  z-index: 1000;
+  margin: 0;
+  transition: top 0.3s ease-in-out;  /* Smooth transition for when it becomes sticky */
+}
+
+/* Fixed position when the progress bar reaches the top */
+.progress-bar-container.sticky {
+  position: fixed;  /* Fixed once it reaches the top */
+  top: 0;  /* Stick it to the top of the viewport */
+}
+
+/* Inner progress bar */
+.progress-bar {
+  height: 100%;
+  border-radius: 15px;
+  background-color: #4CAF50;
+  width: 0;  /* Set dynamically with progress */
+  transition: width 0.3s ease-in-out;
+}
